@@ -3,22 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public enum SpawnLayout
-    {
-        Rectangle,
-        Circle,
-        Trapezoid,
-        Cross
-    }
-
-    public enum SpawnDirection
-    {
-        Up,
-        Down,
-        Left,
-        Right
-    }
-
 [System.Serializable]
 public class SpawnPattern
 {
@@ -28,7 +12,6 @@ public class SpawnPattern
     public int colCount;
     public float spawnInterval = 0.5f;
     public Vector2 spawnOffset; // 用于排布间隔
-
     public SpawnLayout layout;
     public SpawnDirection spawnDirection;
 

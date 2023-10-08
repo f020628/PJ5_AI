@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bullet : MonoBehaviour
+public class Wanbiao : MonoBehaviour
 {
     public float speed = 40f;
     public float damage = 10f; // 这是基础伤害，可以受到玩家攻击力的影响
     public float lifeDuration = 5f; // 子弹的生存时长
     private Vector2 moveDirection; // 子弹的移动方向
+    
     private void Start()
     {
         // 设置子弹的移动方向为其初始向上的方向

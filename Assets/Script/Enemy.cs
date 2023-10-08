@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public float health = 20f;
+    public float health = 10f;
     public float speed = 0.5f;
     public float attackDamage = 20f;
 
@@ -59,7 +59,7 @@ public class Enemy : MonoBehaviour
         {
             Die();
         }
-        Debug.Log("Enemy health: " + health);
+        //Debug.Log("Enemy health: " + health);
     }
 
     private void Die()

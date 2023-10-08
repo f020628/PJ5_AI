@@ -34,36 +34,29 @@ public class PlayerController : MonoBehaviour
     private Vector2 moveInput;
 
     // 子弹和攻击
-    public GameObject bulletPrefab;
     public Transform firePoint1;
     public Transform firePoint2;
     public Transform firePoint3;
     public Transform firePoint4;
 
+    private Dictionary<WeaponType, System.Action> weaponActivationMethods;
+    private Dictionary<WeaponType, System.Action> weaponDeactivationMethods;
+
     // 更多攻击相关属性...
 
-     public enum WeaponType
-    {
-        Basic,//拐杖
-        Weapon1,//枪
-        Weapon2,//大炮
-        Weapon3,//光剑
-        Weapon4,
-        Weapon5
-
-    }
-
+     
     public WeaponType currentWeapon = WeaponType.Basic;
     private float weaponDuration;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        InitializeWeaponDictionaries();
     }
 
     private void Update()
     {
-        if (currentWeapon == WeaponType.Weapon1)
+        if (currentWeapon == WeaponType.Wanbiao)
         {
             RotateGun();
             HandleAutomaticShooting();
@@ -94,14 +87,39 @@ public class PlayerController : MonoBehaviour
 
     private void HandleAutomaticShooting()
     {
-        if (currentWeapon == WeaponType.Basic && Time.time > nextShootTime)
+        if (currentWeapon == WeaponType.Wanbiao && Time.time > nextShootTime)
         {
-            Shoot();
+            ShootWanbiao();
             nextShootTime = Time.time + shootInterval;
         }
     }
 
-    private void Shoot()
+    private void InitializeWeaponDictionaries()
+    {
+        weaponActivationMethods = new Dictionary<WeaponType, System.Action>
+        {
+            { WeaponType.Basic, ActivateBlades },
+            { WeaponType.Wanbiao, DeactivateBlades },
+            { WeaponType.Weapon2, DeactivateBlades },
+            { WeaponType.Weapon3, DeactivateBlades },
+            { WeaponType.Weapon4, DeactivateBlades },
+            { WeaponType.Weapon5, DeactivateBlades }
+        };
+
+        // 如果每种武器的停用方法不同，可以在此为 weaponDeactivationMethods 字典分配函数
+        weaponDeactivationMethods = new Dictionary<WeaponType, System.Action>
+        {
+            { WeaponType.Basic, null },  // No deactivation method for Basic
+            { WeaponType.Wanbiao, null },
+            { WeaponType.Weapon2, null },
+            { WeaponType.Weapon3, null },
+            { WeaponType.Weapon4, null },
+            { WeaponType.Weapon5, null }
+        };
+    }
+
+
+    private void ShootWanbiao()
     {
         
        /*  float elapsedTimeSinceLastShot = Time.time - nextShootTime + shootInterval; // 获取从上次射击到现在所经过的时间
@@ -109,11 +127,11 @@ public class PlayerController : MonoBehaviour
         Vector2 estimatedDirection = Quaternion.Euler(0, 0, estimatedRotation) * transform.up; // 估算的发射方向 */
         Vector2 currentDirection = gunTransform.up;
 
-        Bullet bullet1 = Instantiate(bulletPrefab, firePoint1.position, firePoint1.rotation).GetComponent<Bullet>();
-        Bullet bullet2 = Instantiate(bulletPrefab, firePoint2.position, firePoint2.rotation).GetComponent<Bullet>();
+        Wanbiao wanbiao1 = Instantiate(WeaponManager.Instance.wanbiaoPrefab, firePoint1.position, firePoint1.rotation).GetComponent<Wanbiao>();
+        Wanbiao wanbiao2 = Instantiate(WeaponManager.Instance.wanbiaoPrefab, firePoint2.position, firePoint2.rotation).GetComponent<Wanbiao>();
 
-        bullet1.SetMoveDirection(currentDirection); // 第一颗子弹沿估算方向
-        bullet2.SetMoveDirection(-currentDirection); // 第二颗子弹沿相反方向
+        wanbiao1.SetMoveDirection(currentDirection); // 第一颗子弹沿估算方向
+        wanbiao2.SetMoveDirection(-currentDirection); // 第二颗子弹沿相反方向
         //Debug.Log("Shooting at: " + Time.time);
         // 其他逻辑...
 
@@ -181,34 +199,21 @@ public class PlayerController : MonoBehaviour
 
      public void SwitchWeapon(int weaponNumber, float duration)
     {
-        switch (weaponNumber)
+        WeaponType selectedWeapon = (WeaponType)weaponNumber;
+
+        // Deactivate the current weapon
+        if (weaponDeactivationMethods[currentWeapon] != null)
         {
-            case 1:
-                currentWeapon = WeaponType.Weapon1;
-                DeactivateBlades();  // 禁用刀
-            break;
-            case 2:
-                currentWeapon = WeaponType.Weapon2;
-                DeactivateBlades();
-                break;
-            case 3:
-                currentWeapon = WeaponType.Weapon3;
-                DeactivateBlades();
-                break;
-            case 4:
-                currentWeapon = WeaponType.Weapon4;
-                DeactivateBlades();
-                break;
-            case 5:
-                currentWeapon = WeaponType.Weapon5;
-                DeactivateBlades();
-                break;
-            default:
-                currentWeapon = WeaponType.Basic;
-                ActivateBlades();
-                break;
+            weaponDeactivationMethods[currentWeapon].Invoke();
         }
 
+        // Activate the selected weapon
+        if (weaponActivationMethods[selectedWeapon] != null)
+        {
+            weaponActivationMethods[selectedWeapon].Invoke();
+        }
+
+        currentWeapon = selectedWeapon;
         weaponDuration = duration;
         StartCoroutine(WeaponDurationCountdown());
     }

@@ -7,20 +7,21 @@ TagManager:
   - Enemy
   - Obstacle
   - Character
-  - bullet
   - Weapon
+  - Item
+  - Bullet
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
   - Weapon
-  - object
+  - Item
   - Background
   - Enemy
-  - 
+  - Bullet
   - 
   - 
   - 
@@ -49,7 +50,7 @@ TagManager:
   - name: Background
     uniqueID: 310914095
     locked: 0
-  - name: Monster
+  - name: Enemy
     uniqueID: 123511689
     locked: 0
   - name: Item
@@ -60,4 +61,7 @@ TagManager:
     locked: 0
   - name: UI
     uniqueID: 3295309737
+    locked: 0
+  - name: Bullet
+    uniqueID: 1566867753
     locked: 0
