@@ -59,6 +59,36 @@ public class PowerUp : MonoBehaviour
                 {
                     playerController.SwitchWeapon((int)WeaponType.Dianxueshou, 8f);
                 }
+                else if (type == PowerUpType.Jingangzhou)
+                {
+                    playerController.ActiveJingangzhou(10f);
+                }
+
+                if (type == PowerUpType.Rulaishenzhang)
+                {
+                    ActivateRulaishenzhangEffect();
+                }
+                else if (type == PowerUpType.Xixingdafa)
+                {
+                    ActivateXixingdafaEffect();
+                }
+                else if (type == PowerUpType.Biyuefucheng)
+                {
+                    ActivateBiyuefuchengEffect();
+                }
+                else if (type == PowerUpType.Liangyizhenqi)
+                {
+                    ActivateLiangyizhenqiEffect();
+                }
+                else if (type == PowerUpType.Xuechi)
+                {
+                    ActivateXuechiEffect();
+                }
+                else if (type == PowerUpType.Tianleizhan)
+                {
+                    ActiveTianleizhanEffect();
+                }
+                
 
                 // ...其他道具的逻辑
 
@@ -66,4 +96,56 @@ public class PowerUp : MonoBehaviour
             }
         }
     }
+    private void ActivateRulaishenzhangEffect()
+    {
+        GameObject relai = Instantiate(WeaponManager.Instance.RulaishenzhangPrefab,transform.position, Quaternion.identity);
+        
+        // 在1秒后销毁
+        Destroy(relai, 3f);
+    }
+    private void ActivateXixingdafaEffect()
+    {
+        GameObject xixing = Instantiate(WeaponManager.Instance.XixingdafaPrefab,transform.position, Quaternion.identity);
+        
+        // 在1秒后销毁
+        Destroy(xixing, 6f);
+    }
+
+    private void ActivateBiyuefuchengEffect()
+    {
+        GameObject biyue = Instantiate(WeaponManager.Instance.BiyuefuchengPrefab,transform.position, Quaternion.identity);
+        
+        // 在1秒后销毁
+        Destroy(biyue, 6f);
+    }
+
+
+    private void ActivateXuechiEffect()
+    {
+        GameObject xuechi = Instantiate(WeaponManager.Instance.XuechiPrefab,transform.position, Quaternion.identity);
+        
+        // 在1秒后销毁
+        Destroy(xuechi, 6f);
+    }
+    
+     private void ActivateLiangyizhenqiEffect()
+    {
+        GameObject liangyi = Instantiate(WeaponManager.Instance.LiangyizhenqiPrefab,transform.position, Quaternion.identity);
+        
+        // 在1秒后销毁
+        Destroy(liangyi, 6f);
+    }
+
+    private void ActiveTianleizhanEffect()
+    {
+        Camera mainCam = Camera.main;
+        Vector3 centerPosition = mainCam.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, mainCam.nearClipPlane + 1));
+        GameObject tianlei = Instantiate(WeaponManager.Instance.TianleizhanPrefab,centerPosition, Quaternion.identity);
+        
+        // 在1秒后销毁
+        Destroy(tianlei, 10f);
+    }
+
+
+
 }

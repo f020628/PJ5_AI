@@ -7,6 +7,13 @@ public class WeaponManager : MonoBehaviour
     public GameObject wanbiaoPrefab;
     public GameObject wanjianPrefab;
     public GameObject dianxueshouPrefab;
+    public GameObject RulaishenzhangPrefab;
+    public GameObject XixingdafaPrefab;
+    public GameObject BiyuefuchengPrefab;
+    public GameObject TianleizhanPrefab;
+    public GameObject LiangyizhenqiPrefab;
+    public GameObject XuechiPrefab;
+
     // 其他的武器预制体...
 
     private static WeaponManager _instance;

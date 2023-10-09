@@ -12,7 +12,7 @@ public class Enemy : MonoBehaviour
     public Animator animator; // 敌人的动画控制器
 
     public Collider2D enemyCollider; // 敌人的碰撞器
-
+    public Transform spriteTransform; // 用于控制敌人Sprite的旋转
     private Transform player;
     private PlayerController playerController; // 假设玩家的脚本名为 PlayerController
 
@@ -30,11 +30,17 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
-        // 面向玩家
-        if(movable is true){
-            Vector2 direction = (player.position - transform.position).normalized;
-            transform.Translate(direction * speed * Time.deltaTime);
-        }
+       if(movable)
+    {
+        Vector2 direction = (player.position - transform.position).normalized;
+
+        // 计算敌人朝向玩家的角度
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        spriteTransform.rotation = Quaternion.Euler(0, 0, angle);
+
+        transform.Translate(direction * speed * Time.deltaTime);
+    }  
+
         
     }
 
@@ -82,5 +88,11 @@ public class Enemy : MonoBehaviour
             Die(); // 碰撞后敌人消失
         }
     }
+
+    public void AttractTowards(Vector2 direction, float strength)
+    {
+        transform.Translate(direction * strength * Time.deltaTime);
+    }
+
 }
 

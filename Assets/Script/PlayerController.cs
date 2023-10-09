@@ -1,11 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
     // 玩家属性
-    public float health = 100;
+    public float health = 100f;
+    public float maxHealth = 100f;
+    public float maxOverheal = 150f;
+    public float overhealDecayRate = 1f;
+    public float timeBeforeDecay = 5f;
+    private float lastTimeHealthIncreased;
+    
     public int coins = 0;
     public float attackPower = 10f;
     public float moveSpeed = 5f;
@@ -29,7 +36,8 @@ public class PlayerController : MonoBehaviour
 
     private float sprintEndTime;
     private float sprintNextAvailableTime;
-
+    public SpriteRenderer Jingangzhou;
+    public bool isInvincible = false; // 是否处于无敌状态
 
     // 移动和冲刺
     private Rigidbody2D rb;
@@ -80,10 +88,11 @@ void DrawGizmoForTransform(Transform trans, Color color)
     {
         rb = GetComponent<Rigidbody2D>();
         InitializeWeaponDictionaries();
+        HideJingangzhou();
     }
 
     private void Update()
-    {
+    {   HandleOverhealDecay();
         HandleMovement();
         HandleSprint();
         if (currentWeapon == WeaponType.Wanbiao||currentWeapon == WeaponType.Dianxueshou)
@@ -194,6 +203,22 @@ void DrawGizmoForTransform(Transform trans, Color color)
         };
     }
 
+    public void IncreaseHealth(int amount)
+    {
+        health += amount;
+        health = Mathf.Min(health, maxOverheal);
+        lastTimeHealthIncreased = Time.time;
+        Debug.Log("Player health: " + health);
+    }
+
+     private void HandleOverhealDecay()
+    {
+        if (health > maxHealth && Time.time - lastTimeHealthIncreased > timeBeforeDecay)
+        {
+            health -= overhealDecayRate * Time.deltaTime;
+            health = Mathf.Max(health, maxHealth);
+        }
+    }
 
     private void ShootWanbiao()
     {
@@ -299,6 +324,13 @@ private void CreateAndShootDianxueshou(Vector2 direction, Transform firePoint)
         ActivateBlades();  // 武器效果结束后再次启用刀
     }
 
+    private IEnumerator InvincibleDurationCountdown(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        HideJingangzhou();
+        isInvincible = false;
+    }
+
     private void ActivateBlades()
     {
         blade1.SetActive(true);
@@ -313,6 +345,11 @@ private void CreateAndShootDianxueshou(Vector2 direction, Transform firePoint)
 
      public void TakeDamage(float damage)
     {
+        //Debug.Log("Player taking damage: " + damage+"Player health: "+health);
+        if (isInvincible)
+        {
+            return;
+        }
         health -= damage;
 
         if (health <= 0)
@@ -323,6 +360,7 @@ private void CreateAndShootDianxueshou(Vector2 direction, Transform firePoint)
 
     public void Die()
     {
+        SceneManager.LoadScene("End");
         // 处理玩家死亡逻辑...
     }
     // 处理玩家捡到道具、受伤、攻击等逻辑...
@@ -346,6 +384,25 @@ private void CreateAndShootDianxueshou(Vector2 direction, Transform firePoint)
         currentWeapon = selectedWeapon;
         weaponDuration = duration;
         StartCoroutine(WeaponDurationCountdown());
+    }
+
+    public void ActiveJingangzhou(float duration)
+    {
+        isInvincible = true;
+        ShowJingangzhou(); 
+        StartCoroutine(InvincibleDurationCountdown(duration));
+    }
+
+    public void ShowJingangzhou()
+    {
+        //show sprite of jingangzhou
+        Jingangzhou.enabled = true;
+
+    }
+    public void HideJingangzhou()
+    {
+        //hide sprite of jingangzhou
+        Jingangzhou.enabled = false;
     }
 
 }
