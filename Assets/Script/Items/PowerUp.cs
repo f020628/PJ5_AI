@@ -51,9 +51,13 @@ public class PowerUp : MonoBehaviour
                 {
                     playerController.SwitchWeapon((int)WeaponType.Wanbiao, 8f); 
                 }
-                if (type == PowerUpType.Wanjian)
+                else if (type == PowerUpType.Wanjian)
                 {
-                    playerController.SwitchWeapon((int)WeaponType.Wanjian, 80f); 
+                    playerController.SwitchWeapon((int)WeaponType.Wanjian, 12f); 
+                }
+                else if (type == PowerUpType.Dianxueshou)
+                {
+                    playerController.SwitchWeapon((int)WeaponType.Dianxueshou, 8f);
                 }
 
                 // ...其他道具的逻辑

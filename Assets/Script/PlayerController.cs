@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour
     public float sprintSpeedMultiplier = 2f; // 冲刺速度倍数
     public float rotationSpeed = 60f; // 每秒旋转的度数
     public float shootInterval = 0.05f; // 每0.5秒射击一次
+    private float WanjianShootInterval = 0.01f; 
+    private float DianxueshouShootInterval = 0.1f;
 
     private float nextShootTime = 0f;
 
@@ -84,7 +86,7 @@ void DrawGizmoForTransform(Transform trans, Color color)
     {
         HandleMovement();
         HandleSprint();
-        if (currentWeapon == WeaponType.Wanbiao)
+        if (currentWeapon == WeaponType.Wanbiao||currentWeapon == WeaponType.Dianxueshou)
         {
             RotateGun();
             HandleAutomaticShooting();
@@ -100,15 +102,15 @@ void DrawGizmoForTransform(Transform trans, Color color)
             HandleRotation();
         }
     }
-   private void SetFacingDirectionBasedOnMovement()
+ private void SetFacingDirectionBasedOnMovement()
 {
     if (moveInput != Vector2.zero)
     {
         float angle = Mathf.Atan2(lastMoveDirection.y, lastMoveDirection.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(0, 0, angle);
-        facingDirectionForFirePoint1.rotation = Quaternion.Euler(0, 0, angle);
-        facingDirectionForFirePoint2.rotation = Quaternion.Euler(0, 0, angle); //稍微偏转
-        facingDirectionForFirePoint3.rotation = Quaternion.Euler(0, 0, angle); //稍微偏转
+        transform.rotation = Quaternion.Euler(0, 0, angle - 90f);
+        facingDirectionForFirePoint1.rotation = Quaternion.Euler(0, 0, angle - 90f);
+        facingDirectionForFirePoint2.rotation = Quaternion.Euler(0, 0, angle - 92f); //稍微偏转
+        facingDirectionForFirePoint3.rotation = Quaternion.Euler(0, 0, angle - 88f); //稍微偏转
     }
 }
 
@@ -121,19 +123,11 @@ void DrawGizmoForTransform(Transform trans, Color color)
     }
     private void HandleRotation()
     {
-    if (currentWeapon != WeaponType.Wanjian)
-    {
-        transform.Rotate(0, 0, -rotationSpeed * Time.deltaTime); // 顺时针旋转
-    }
-    else
-    {
-        if (moveInput != Vector2.zero)
+        // Only perform rotation if weapon is not Wanjian
+        if (currentWeapon != WeaponType.Wanjian)
         {
-            float angle = Mathf.Atan2(moveInput.y, moveInput.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0, 0, angle - 90f); 
-            facingDirectionForFirePoint1.localPosition = moveInput; // 这会将指示器移动到玩家的面朝方向
+            transform.Rotate(0, 0, -rotationSpeed * Time.deltaTime); // 顺时针旋转
         }
-    }
     }
 
 
@@ -152,7 +146,7 @@ void DrawGizmoForTransform(Transform trans, Color color)
         if (moveInput != Vector2.zero)
         {
             lastMoveDirection = moveInput;
-            Debug.Log("lastMoveDirection: " + lastMoveDirection+"moveInput: "+moveInput+"Time: "+Time.time);
+            //Debug.Log("lastMoveDirection: " + lastMoveDirection+"moveInput: "+moveInput+"Time: "+Time.time);
         }
         // 添加惯性的逻辑...
     }
@@ -164,10 +158,15 @@ void DrawGizmoForTransform(Transform trans, Color color)
             ShootWanbiao();
             nextShootTime = Time.time + shootInterval;
         }
-        if (currentWeapon == WeaponType.Wanjian && Time.time > nextShootTime)
+        else if (currentWeapon == WeaponType.Wanjian && Time.time > nextShootTime)
         {
             ShootWanjian();
-            nextShootTime = Time.time + shootInterval;
+            nextShootTime = Time.time + WanjianShootInterval;
+        }
+        else if (currentWeapon == WeaponType.Dianxueshou && Time.time > nextShootTime)
+        {
+            ShootDianxueshou();
+            nextShootTime = Time.time + DianxueshouShootInterval;
         }
     }
 
@@ -178,7 +177,7 @@ void DrawGizmoForTransform(Transform trans, Color color)
             { WeaponType.Basic, ActivateBlades },
             { WeaponType.Wanbiao, DeactivateBlades },
             { WeaponType.Wanjian, DeactivateBlades },
-            { WeaponType.Weapon3, DeactivateBlades },
+            { WeaponType.Dianxueshou, DeactivateBlades },
             { WeaponType.Weapon4, DeactivateBlades },
             { WeaponType.Weapon5, DeactivateBlades }
         };
@@ -189,7 +188,7 @@ void DrawGizmoForTransform(Transform trans, Color color)
             { WeaponType.Basic, null },  // No deactivation method for Basic
             { WeaponType.Wanbiao, null },
             { WeaponType.Wanjian, null },
-            { WeaponType.Weapon3, null },
+            { WeaponType.Dianxueshou, null },
             { WeaponType.Weapon4, null },
             { WeaponType.Weapon5, null }
         };
@@ -205,7 +204,7 @@ void DrawGizmoForTransform(Transform trans, Color color)
         Vector2 currentDirection = gunTransform.up;
 
         Wanbiao wanbiao1 = Instantiate(WeaponManager.Instance.wanbiaoPrefab, firePoint1.position, firePoint1.rotation).GetComponent<Wanbiao>();
-        Wanbiao wanbiao2 = Instantiate(WeaponManager.Instance.wanbiaoPrefab, firePoint2.position, firePoint2.rotation).GetComponent<Wanbiao>();
+        Wanbiao wanbiao2 = Instantiate(WeaponManager.Instance.wanbiaoPrefab, firePoint1.position, firePoint1.rotation).GetComponent<Wanbiao>();
 
         wanbiao1.SetMoveDirection(currentDirection); // 第一颗子弹沿估算方向
         wanbiao2.SetMoveDirection(-currentDirection); // 第二颗子弹沿相反方向
@@ -214,6 +213,44 @@ void DrawGizmoForTransform(Transform trans, Color color)
 
         // 子弹属性、数量、方向的逻辑...
     }
+
+  private void ShootDianxueshou()
+{
+    Vector2 upDirection = gunTransform.up; // 正上方
+    Vector2 rightDirection = gunTransform.right; // 正右方
+    Vector2 downDirection = -upDirection; // 正下方
+    Vector2 leftDirection = -rightDirection; // 正左方
+
+    // 创建子弹并设置它们的移动方向
+    CreateAndShootDianxueshou(upDirection, firePoint1);
+    CreateAndShootDianxueshou(downDirection, firePoint1);
+    CreateAndShootDianxueshou(leftDirection, firePoint1);
+    CreateAndShootDianxueshou(rightDirection, firePoint1);
+
+    // 45度角方向
+    Vector2 upRightDirection = Quaternion.Euler(0, 0, -45) * upDirection; 
+    Vector2 upLeftDirection = Quaternion.Euler(0, 0, 45) * upDirection;
+    Vector2 downLeftDirection = Quaternion.Euler(0, 0, 135) * upDirection;
+    Vector2 downRightDirection = Quaternion.Euler(0, 0, -135) * upDirection;
+
+    // 创建子弹并设置它们的移动方向
+    CreateAndShootDianxueshou(upRightDirection, firePoint1);
+    CreateAndShootDianxueshou(upLeftDirection, firePoint1);
+    CreateAndShootDianxueshou(downLeftDirection, firePoint1);
+    CreateAndShootDianxueshou(downRightDirection, firePoint1);
+}
+
+private void CreateAndShootDianxueshou(Vector2 direction, Transform firePoint)
+{
+    Vector2 position = firePoint.position; 
+    float rotationAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg; // 旋转角度
+
+    Dianxueshou bullet = Instantiate(WeaponManager.Instance.dianxueshouPrefab, position,  Quaternion.Euler(0, 0, rotationAngle)).GetComponent<Dianxueshou>();
+    bullet.SetMoveDirection(direction);
+}
+
+
+
     private void ShootWanjian()
     {
         FireFromPoint(WeaponManager.Instance.wanjianPrefab, firePoint1, facingDirectionForFirePoint1);
@@ -224,14 +261,10 @@ void DrawGizmoForTransform(Transform trans, Color color)
 
     private void FireFromPoint(GameObject bulletPrefab, Transform firePoint, Transform facingDirection)
     {
-        Vector2 direction = facingDirection.right;
-        Wanjian wanjianBullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.Euler(0, 0, facingDirection.eulerAngles.z)).GetComponent<Wanjian>();
+        Vector2 direction = facingDirection.up;  // 使用Transform.up作为面朝方向
+        Wanjian wanjianBullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.Euler(0, 0, facingDirection.eulerAngles.z - 90f)).GetComponent<Wanjian>();
         wanjianBullet.SetMoveDirection(direction);
     }
-
-
-
-
 
 
 

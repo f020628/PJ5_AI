@@ -61,6 +61,11 @@ public class Enemy : MonoBehaviour
         }
         //Debug.Log("Enemy health: " + health);
     }
+    public void Stopstill(float stoptime)
+    {
+        movable = false;
+        Invoke("movable",stoptime);
+    }
 
     private void Die()
     {   movable = false;    

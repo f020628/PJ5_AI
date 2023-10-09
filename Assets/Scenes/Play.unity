@@ -2522,7 +2522,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.1244, y: -0.2405, z: 0}
-  m_LocalScale: {x: 18.992529, y: 11.683, z: 1}
+  m_LocalScale: {x: 18.992529, y: 11.683, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -4104,6 +4104,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wanbiaoPrefab: {fileID: 3304955105319445913, guid: d238281c4d3cadc40adb052252ebb011, type: 3}
   wanjianPrefab: {fileID: 7128881277379902472, guid: e037bdfbefa59764eabd0b3b2a0e2ad0, type: 3}
+  dianxueshouPrefab: {fileID: 3304955105319445913, guid: 95d3d82248e6deb44a98e5791dab0ec9, type: 3}
 --- !u!4 &1662235092
 Transform:
   m_ObjectHideFlags: 0
@@ -5305,7 +5306,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5910388503211757280, guid: 192250088dfc56642a31ff471116fc73, type: 3}
       propertyPath: type
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6397110183479555289, guid: 192250088dfc56642a31ff471116fc73, type: 3}
       propertyPath: m_LocalPosition.x

@@ -6,6 +6,7 @@ public class WeaponManager : MonoBehaviour
 {
     public GameObject wanbiaoPrefab;
     public GameObject wanjianPrefab;
+    public GameObject dianxueshouPrefab;
     // 其他的武器预制体...
 
     private static WeaponManager _instance;
