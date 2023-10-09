@@ -6,7 +6,7 @@ using UnityEngine;
 {
     Basic,//拐杖
     Wanbiao,//万镖
-    Weapon2,//大炮
+    Wanjian,//大炮
     Weapon3,//光剑
     Weapon4,
     Weapon5

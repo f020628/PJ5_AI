@@ -51,6 +51,11 @@ public class PowerUp : MonoBehaviour
                 {
                     playerController.SwitchWeapon((int)WeaponType.Wanbiao, 8f); 
                 }
+                if (type == PowerUpType.Wanjian)
+                {
+                    playerController.SwitchWeapon((int)WeaponType.Wanjian, 80f); 
+                }
+
                 // ...其他道具的逻辑
 
                 Destroy(gameObject);  // 触碰玩家后，销毁道具

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Wanbiao : MonoBehaviour
+public class Wanjian: MonoBehaviour
 {
     public float speed = 40f;
     public float damage = 10f; // 这是基础伤害，可以受到玩家攻击力的影响

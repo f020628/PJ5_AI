@@ -39,6 +39,32 @@ public class PlayerController : MonoBehaviour
     public Transform firePoint3;
     public Transform firePoint4;
 
+    public Transform facingDirectionForFirePoint1;
+    public Transform facingDirectionForFirePoint2;
+    public Transform facingDirectionForFirePoint3;
+    void OnDrawGizmos()
+{
+    DrawGizmoForTransform(firePoint1, Color.red);
+    DrawGizmoForTransform(firePoint2, Color.green);
+    DrawGizmoForTransform(firePoint3, Color.blue);
+    DrawGizmoForTransform(facingDirectionForFirePoint1, Color.yellow);
+    DrawGizmoForTransform(facingDirectionForFirePoint2, Color.magenta);
+    DrawGizmoForTransform(facingDirectionForFirePoint3, Color.cyan);
+}
+
+void DrawGizmoForTransform(Transform trans, Color color)
+{
+    if (trans)
+    {
+        Gizmos.color = color;
+        Gizmos.DrawSphere(trans.position, 0.1f);
+        Gizmos.DrawLine(trans.position, trans.position + (Vector3)trans.right);
+    }
+}
+    private Vector2 lastMoveDirection = Vector2.up; // 默认为右方向
+
+
+
     private Dictionary<WeaponType, System.Action> weaponActivationMethods;
     private Dictionary<WeaponType, System.Action> weaponDeactivationMethods;
 
@@ -56,15 +82,38 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        HandleMovement();
+        HandleSprint();
         if (currentWeapon == WeaponType.Wanbiao)
         {
             RotateGun();
             HandleAutomaticShooting();
+            HandleRotation();
         }
-        HandleMovement();
-        HandleSprint();
-        HandleRotation();
+        else if (currentWeapon == WeaponType.Wanjian)
+        {
+            SetFacingDirectionBasedOnMovement();
+            HandleAutomaticShooting();
+        }
+        else
+        {
+            HandleRotation();
+        }
     }
+   private void SetFacingDirectionBasedOnMovement()
+{
+    if (moveInput != Vector2.zero)
+    {
+        float angle = Mathf.Atan2(lastMoveDirection.y, lastMoveDirection.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(0, 0, angle);
+        facingDirectionForFirePoint1.rotation = Quaternion.Euler(0, 0, angle);
+        facingDirectionForFirePoint2.rotation = Quaternion.Euler(0, 0, angle); //稍微偏转
+        facingDirectionForFirePoint3.rotation = Quaternion.Euler(0, 0, angle); //稍微偏转
+    }
+}
+
+
+
 
     private void FixedUpdate()
     {
@@ -72,16 +121,39 @@ public class PlayerController : MonoBehaviour
     }
     private void HandleRotation()
     {
+    if (currentWeapon != WeaponType.Wanjian)
+    {
         transform.Rotate(0, 0, -rotationSpeed * Time.deltaTime); // 顺时针旋转
     }
-    private void RotateGun()
+    else
     {
+        if (moveInput != Vector2.zero)
+        {
+            float angle = Mathf.Atan2(moveInput.y, moveInput.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0, 0, angle - 90f); 
+            facingDirectionForFirePoint1.localPosition = moveInput; // 这会将指示器移动到玩家的面朝方向
+        }
+    }
+    }
+
+
+
+    private void RotateGun()
+    {   if (currentWeapon == WeaponType.Wanbiao)
+        {
         gunTransform.Rotate(0, 0, -gunRotationSpeed * Time.deltaTime); // 旋转枪
+        }
+        
     }
     private void HandleMovement()
     {
         moveInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
         moveInput.Normalize();
+        if (moveInput != Vector2.zero)
+        {
+            lastMoveDirection = moveInput;
+            Debug.Log("lastMoveDirection: " + lastMoveDirection+"moveInput: "+moveInput+"Time: "+Time.time);
+        }
         // 添加惯性的逻辑...
     }
 
@@ -92,6 +164,11 @@ public class PlayerController : MonoBehaviour
             ShootWanbiao();
             nextShootTime = Time.time + shootInterval;
         }
+        if (currentWeapon == WeaponType.Wanjian && Time.time > nextShootTime)
+        {
+            ShootWanjian();
+            nextShootTime = Time.time + shootInterval;
+        }
     }
 
     private void InitializeWeaponDictionaries()
@@ -100,7 +177,7 @@ public class PlayerController : MonoBehaviour
         {
             { WeaponType.Basic, ActivateBlades },
             { WeaponType.Wanbiao, DeactivateBlades },
-            { WeaponType.Weapon2, DeactivateBlades },
+            { WeaponType.Wanjian, DeactivateBlades },
             { WeaponType.Weapon3, DeactivateBlades },
             { WeaponType.Weapon4, DeactivateBlades },
             { WeaponType.Weapon5, DeactivateBlades }
@@ -111,7 +188,7 @@ public class PlayerController : MonoBehaviour
         {
             { WeaponType.Basic, null },  // No deactivation method for Basic
             { WeaponType.Wanbiao, null },
-            { WeaponType.Weapon2, null },
+            { WeaponType.Wanjian, null },
             { WeaponType.Weapon3, null },
             { WeaponType.Weapon4, null },
             { WeaponType.Weapon5, null }
@@ -137,6 +214,26 @@ public class PlayerController : MonoBehaviour
 
         // 子弹属性、数量、方向的逻辑...
     }
+    private void ShootWanjian()
+    {
+        FireFromPoint(WeaponManager.Instance.wanjianPrefab, firePoint1, facingDirectionForFirePoint1);
+        FireFromPoint(WeaponManager.Instance.wanjianPrefab, firePoint2, facingDirectionForFirePoint2);
+        FireFromPoint(WeaponManager.Instance.wanjianPrefab, firePoint3, facingDirectionForFirePoint3);
+    }
+
+
+    private void FireFromPoint(GameObject bulletPrefab, Transform firePoint, Transform facingDirection)
+    {
+        Vector2 direction = facingDirection.right;
+        Wanjian wanjianBullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.Euler(0, 0, facingDirection.eulerAngles.z)).GetComponent<Wanjian>();
+        wanjianBullet.SetMoveDirection(direction);
+    }
+
+
+
+
+
+
 
     private void HandleSprint()
     {
