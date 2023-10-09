@@ -15,6 +15,7 @@ public class Enemy : MonoBehaviour
     public Transform spriteTransform; // 用于控制敌人Sprite的旋转
     private Transform player;
     private PlayerController playerController; // 假设玩家的脚本名为 PlayerController
+    public GameObject CoinPrefab;
 
     private void Start()
     {
@@ -73,9 +74,14 @@ public class Enemy : MonoBehaviour
         Invoke("movable",stoptime);
     }
 
-    private void Die()
+    public void Die()
     {   movable = false;    
         enemyCollider.enabled = false;
+        //有概率生成金币
+        if(Random.Range(0,10)>5)
+        {
+            Instantiate(CoinPrefab, transform.position, Quaternion.identity);
+        }
         // 播放死亡动画
         animator.Play("FadeOut");
     }

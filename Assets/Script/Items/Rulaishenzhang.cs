@@ -39,7 +39,8 @@ public class Rulaishenzhang : MonoBehaviour
         if (enemy != null)
         {
             // ÏûÃðµÐÈË
-            Destroy(enemy.gameObject);
+            //call Die() method
+            enemy.Die();
         }
 
     }

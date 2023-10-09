@@ -54,6 +54,7 @@ MonoBehaviour:
   animator: {fileID: 5005536833712592354}
   enemyCollider: {fileID: 2383244042502162321}
   spriteTransform: {fileID: 2744151596224692699}
+  CoinPrefab: {fileID: 1942815365860547370, guid: 3a816b124a21ac74da454a370a3abe71, type: 3}
 --- !u!95 &5005536833712592354
 Animator:
   serializedVersion: 5

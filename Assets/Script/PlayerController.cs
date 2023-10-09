@@ -13,7 +13,6 @@ public class PlayerController : MonoBehaviour
     public float timeBeforeDecay = 5f;
     private float lastTimeHealthIncreased;
     
-    public int coins = 0;
     public float attackPower = 10f;
     public float moveSpeed = 5f;
     public int enemyKillCount = 0;

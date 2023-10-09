@@ -10,7 +10,7 @@ public class Tianleizhan : MonoBehaviour
         if (enemy != null)
         {
             // ÏûÃğµĞÈË
-            Destroy(enemy.gameObject);
+            enemy.Die();    
         }
 
     }

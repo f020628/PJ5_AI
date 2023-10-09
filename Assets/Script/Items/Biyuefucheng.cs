@@ -47,14 +47,5 @@ public class Biyuefucheng : MonoBehaviour
             }
         }
     }
-    /* private void OnTriggerEnter2D(Collider2D other)
-    {
-        Enemy enemy = other.GetComponent<Enemy>();
-        if (enemy != null)
-        {
-            // ÏûÃðµÐÈË
-            Destroy(enemy.gameObject);
-        }
-
-    } */
+    
 }
