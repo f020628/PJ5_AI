@@ -48,9 +48,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 112c750c68d63ff45813aa059a5b24ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 20
-  speed: 0.5
-  attackDamage: 20
+  health: 10
+  speed: 0.7
+  attackDamage: 5
   animator: {fileID: 5005536833712592354}
   enemyCollider: {fileID: 2383244042502162321}
   spriteTransform: {fileID: 2744151596224692699}

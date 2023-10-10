@@ -6,12 +6,14 @@ using UnityEngine;
 [System.Serializable]
 public class SpawnPattern
 {
-    public GameObject enemyPrefab;
-    public GameObject BigenemyPrefab;
+   /*  public GameObject enemyPrefab;
+    public GameObject BigenemyPrefab; */
+
     public int rowCount;
     public int colCount;
-    public float spawnInterval = 0.5f;
-    public Vector2 spawnOffset; // 用于排布间隔
+
+    public float spawnInterval = 0f;
+    public Vector2 spawnOffset = new Vector2(0.6f, 0.6f);
     public SpawnLayout layout;
     public SpawnDirection spawnDirection;
 
@@ -31,7 +33,20 @@ public class EnemySpawner : MonoBehaviour
     public List<Transform> potentialSpawnLocations;  // 所有Wave共用的生成位置列表
     private int currentWave = 0;
     
+    private int maxWave = 10;
+    
     public Rect gameArea = new Rect(-8f, -4.5f, 16, 9);// 假设场地是一个15x18的区域，中心位于(0,0)
+
+    public GameObject enemyPrefab;
+    public GameObject BigenemyPrefab;
+
+    public int minRowCount = 3;
+    public int maxRowCount = 6;
+    public int minColCount = 3;
+    public int maxColCount = 6;
+
+    public float waveInterval = 3f;  // 每个Wave之间的时间间隔
+    public float patternInterval = 1.5f;
 
     private void Start()
     {
@@ -57,25 +72,35 @@ public class EnemySpawner : MonoBehaviour
 
     }
 
-    private IEnumerator SpawnWaveRoutine()
+   private IEnumerator SpawnWaveRoutine()
+{
+    while(currentWave < maxWave)
     {
-        while(currentWave < waves.Count)
+        for (int i = 0; i < 25; i++)
         {
-            Wave wave = waves[currentWave];
-            foreach (SpawnPattern pattern in wave.spawnPatterns)
-            {
+            SpawnPattern pattern = new SpawnPattern();
+            // Randomize row and col count for this pattern
+            pattern.rowCount = Random.Range(minRowCount, maxRowCount + 1);
+            pattern.colCount = Random.Range(minColCount, maxColCount + 1); 
+
             Transform randomSpawnLocation = potentialSpawnLocations[Random.Range(0, potentialSpawnLocations.Count)];
             yield return StartCoroutine(SpawnPatternRoutine(pattern, randomSpawnLocation));
-            yield return new WaitForSeconds(wave.patternInterval);  // 等待下一组敌人
-            }
+            yield return new WaitForSeconds(patternInterval);  // 等待下一组敌人
+        }
 
         // 清除场上所有敌人
-            ClearAllEnemies();
+        ClearAllEnemies();
 
-            yield return new WaitForSeconds(wave.waveInterval - wave.patternInterval);  // 减去最后一组和下一波之间的间隔
-            currentWave++;
-        }
+        yield return new WaitForSeconds(waveInterval - patternInterval);  // 减去最后一组和下一波之间的间隔
+        currentWave++;
+        int increaseValue = Mathf.CeilToInt(currentWave / 5.0f);
+        minRowCount += increaseValue;
+        maxRowCount += increaseValue;
+        minColCount += increaseValue;
+        maxColCount += increaseValue;
     }
+}
+
 
    private IEnumerator SpawnPatternRoutine(SpawnPattern pattern, Transform spawnLocation)
 {
@@ -127,7 +152,7 @@ private IEnumerator SpawnRectangle(SpawnPattern pattern, Transform spawnLocation
                     break;
             }
 
-            GameObject enemy = Instantiate(pattern.enemyPrefab, spawnPosition, Quaternion.identity);
+            GameObject enemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
             checkSpawn(enemy);
             yield return new WaitForSeconds(pattern.spawnInterval);
         }
@@ -143,7 +168,7 @@ private IEnumerator SpawnRectangle(SpawnPattern pattern, Transform spawnLocation
         {
             float angle = i * angleStep;
             Vector2 positionOffset = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad)) * radius;
-            GameObject enemy = Instantiate(pattern.enemyPrefab, (Vector2)spawnLocation.position + positionOffset, Quaternion.identity);
+            GameObject enemy = Instantiate(enemyPrefab, (Vector2)spawnLocation.position + positionOffset, Quaternion.identity);
             checkSpawn(enemy);
             yield return new WaitForSeconds(pattern.spawnInterval);
         }
@@ -177,7 +202,7 @@ private IEnumerator SpawnRectangle(SpawnPattern pattern, Transform spawnLocation
                         break;
                 }
 
-                GameObject enemy = Instantiate(pattern.enemyPrefab, (Vector2)spawnLocation.position + positionOffset, Quaternion.identity);
+                GameObject enemy = Instantiate(enemyPrefab, (Vector2)spawnLocation.position + positionOffset, Quaternion.identity);
                 checkSpawn(enemy);
                 
                 yield return new WaitForSeconds(pattern.spawnInterval);
@@ -189,18 +214,18 @@ private IEnumerator SpawnRectangle(SpawnPattern pattern, Transform spawnLocation
     private IEnumerator SpawnCross(SpawnPattern pattern, Transform spawnLocation)
     {
         // Center enemy
-        Instantiate(pattern.enemyPrefab, spawnLocation.position, Quaternion.identity);
+        Instantiate(enemyPrefab, spawnLocation.position, Quaternion.identity);
         yield return new WaitForSeconds(pattern.spawnInterval);
         // Horizontal and vertical enemies
         for (int i = 1; i <= pattern.rowCount / 2; i++)  // 假设count是偶数，例如4表示上下左右各生成一个敌人
         {
-            GameObject enemy1 = Instantiate(pattern.enemyPrefab, spawnLocation.position + new Vector3(i * pattern.spawnOffset.x, 0, 0), Quaternion.identity);
+            GameObject enemy1 = Instantiate(enemyPrefab, spawnLocation.position + new Vector3(i * pattern.spawnOffset.x, 0, 0), Quaternion.identity);
             checkSpawn(enemy1);
-            GameObject enemy2 =Instantiate(pattern.enemyPrefab, spawnLocation.position - new Vector3(i * pattern.spawnOffset.x, 0, 0), Quaternion.identity);
+            GameObject enemy2 =Instantiate(enemyPrefab, spawnLocation.position - new Vector3(i * pattern.spawnOffset.x, 0, 0), Quaternion.identity);
             checkSpawn(enemy2);
-            GameObject enemy3 =Instantiate(pattern.enemyPrefab, spawnLocation.position + new Vector3(0, i * pattern.spawnOffset.y, 0), Quaternion.identity);
+            GameObject enemy3 =Instantiate(enemyPrefab, spawnLocation.position + new Vector3(0, i * pattern.spawnOffset.y, 0), Quaternion.identity);
             checkSpawn(enemy3);
-            GameObject enemy4 =Instantiate(pattern.enemyPrefab, spawnLocation.position - new Vector3(0, i * pattern.spawnOffset.y, 0), Quaternion.identity);
+            GameObject enemy4 =Instantiate(enemyPrefab, spawnLocation.position - new Vector3(0, i * pattern.spawnOffset.y, 0), Quaternion.identity);
             checkSpawn(enemy4);
             yield return new WaitForSeconds(pattern.spawnInterval);
         }

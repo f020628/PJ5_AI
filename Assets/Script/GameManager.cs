@@ -16,6 +16,9 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI killText;  // Reference to the TextMeshProUGUI component for enemyKills
     public TextMeshProUGUI healthText;  // Reference to the TextMeshProUGUI component for health
 
+    public TextMeshProUGUI timerText;  // Reference to the TextMeshProUGUI component for timer
+
+
     private void Awake()
     {
         if (Instance == null)
@@ -36,5 +39,6 @@ public class GameManager : MonoBehaviour
         coinText.text = "C: " + coins;
         killText.text = "K: " + enemyKills;
         healthText.text = "H: " + health;
+        timerText.text = "T: " + Time.time;
     }
 }
