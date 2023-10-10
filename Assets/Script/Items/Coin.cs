@@ -5,9 +5,14 @@ using UnityEngine;
 public class Coin : MonoBehaviour
 {
     // Start is called before the first frame update
+
+    public Animator animator;
     void Start()
     {
-        
+        //循环播放金币动画
+        animator.Play("CoinR");
+        //15s后销毁自身
+        Destroy(gameObject, 15f);
     }
 
     // Update is called once per frame
