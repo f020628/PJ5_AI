@@ -43,7 +43,6 @@ public class PowerUp : MonoBehaviour
         if (collider.CompareTag("Player"))
         {
             PlayerController playerController = collider.GetComponent<PlayerController>();
-            Debug.Log("PlayerController: " + playerController);
             
             if (playerController != null) // 确保获取的PlayerController组件不为null
             {
@@ -53,7 +52,7 @@ public class PowerUp : MonoBehaviour
                 }
                 else if (type == PowerUpType.Wanjian)
                 {
-                    playerController.SwitchWeapon((int)WeaponType.Wanjian, 12f); 
+                    playerController.SwitchWeapon((int)WeaponType.Wanjian, 8f); 
                 }
                 else if (type == PowerUpType.Dianxueshou)
                 {

@@ -6,7 +6,6 @@ using UnityEngine;
 public class PowerUpSpawner : MonoBehaviour
 {
     public List<GameObject> powerUps;  // 所有道具的列表
-    public float spawnInterval = 10f;  // 生成间隔
     public Rect gameArea = new Rect(-8f, -4.5f, 16, 9);  // 游戏区域
     public GameObject powerUpPrefab;  // 道具预制体
 
@@ -24,10 +23,35 @@ public class PowerUpSpawner : MonoBehaviour
                 currentPowerUps.Add(randomItem);
             }
         }
-        InvokeRepeating("SpawnPowerUp", spawnInterval, spawnInterval);  // 每隔spawnInterval秒生成一个道具
+       SpawnPowerUpWithInterval();
     }
 
+    private void SpawnPowerUpWithInterval()
+    {
+        float spawnInterval = Random.Range(8, 12); // 生成时间在8-12之间随机
+        SpawnPowerUp();
+        Invoke("SpawnPowerUpWithInterval", spawnInterval); // 使用Invoke代替InvokeRepeating
+    }
+    
+    
+    
     private void SpawnPowerUp()
+    {
+        int numberOfPowerUps = Random.Range(1, 4); // 随机生成1-3个道具
+        for (int i = 0; i < numberOfPowerUps; i++)
+        {
+            Vector2 spawnPosition = new Vector2(
+                Random.Range(gameArea.xMin, gameArea.xMax),
+                Random.Range(gameArea.yMin, gameArea.yMax)
+            );
+            PowerUpItem randomPowerUpItem = currentPowerUps[Random.Range(0, currentPowerUps.Count)];
+            GameObject spawnedPowerUp = Instantiate(powerUpPrefab, spawnPosition, Quaternion.identity);
+            spawnedPowerUp.GetComponent<SpriteRenderer>().sprite = randomPowerUpItem.sprite;
+            spawnedPowerUp.GetComponent<PowerUp>().type = randomPowerUpItem.type;
+        }
+    }
+}    
+/* private void SpawnPowerUp()
     {
         Vector2 spawnPosition = new Vector2(
             Random.Range(gameArea.xMin, gameArea.xMax),
@@ -37,6 +61,6 @@ public class PowerUpSpawner : MonoBehaviour
         GameObject spawnedPowerUp = Instantiate(powerUpPrefab, spawnPosition, Quaternion.identity);
         spawnedPowerUp.GetComponent<SpriteRenderer>().sprite = randomPowerUpItem.sprite;
         spawnedPowerUp.GetComponent<PowerUp>().type = randomPowerUpItem.type;
-    }
-}
+    } */
+
 

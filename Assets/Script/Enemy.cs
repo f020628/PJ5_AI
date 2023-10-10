@@ -82,6 +82,7 @@ public class Enemy : MonoBehaviour
         {
             Instantiate(CoinPrefab, transform.position, Quaternion.identity);
         }
+        GameManager.Instance.enemyKills++;
         // ²¥·ÅËÀÍö¶¯»­
         animator.Play("FadeOut");
     }

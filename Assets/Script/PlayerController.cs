@@ -207,7 +207,7 @@ void DrawGizmoForTransform(Transform trans, Color color)
         health += amount;
         health = Mathf.Min(health, maxOverheal);
         lastTimeHealthIncreased = Time.time;
-        Debug.Log("Player health: " + health);
+        //Debug.Log("Player health: " + health);
     }
 
      private void HandleOverhealDecay()
@@ -403,5 +403,11 @@ private void CreateAndShootDianxueshou(Vector2 direction, Transform firePoint)
         //hide sprite of jingangzhou
         Jingangzhou.enabled = false;
     }
+
+    public float ShowHealth()
+    {
+        return health;
+    }
+   
 
 }
