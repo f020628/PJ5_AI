@@ -7,7 +7,7 @@ public class PowerUp : MonoBehaviour
     
 
     public PowerUpType type;
-    public float existenceDuration = 15f;  // 道具存在的时间
+    public float existenceDuration = 12f;  // 道具存在的时间
     private float spawnTime;
 
     public float moveSpeed = 0.2f;
@@ -128,7 +128,7 @@ public class PowerUp : MonoBehaviour
         GameObject biyue = Instantiate(WeaponManager.Instance.BiyuefuchengPrefab,transform.position, Quaternion.identity);
         
         // 在1秒后销毁
-        Destroy(biyue, 6f);
+        Destroy(biyue, 7f);
     }
 
 
@@ -137,7 +137,7 @@ public class PowerUp : MonoBehaviour
         GameObject xuechi = Instantiate(WeaponManager.Instance.XuechiPrefab,transform.position, Quaternion.identity);
         
         // 在1秒后销毁
-        Destroy(xuechi, 6f);
+        Destroy(xuechi, 7f);
     }
     
      private void ActivateLiangyizhenqiEffect()
@@ -145,7 +145,7 @@ public class PowerUp : MonoBehaviour
         GameObject liangyi = Instantiate(WeaponManager.Instance.LiangyizhenqiPrefab,transform.position, Quaternion.identity);
         
         // 在1秒后销毁
-        Destroy(liangyi, 6f);
+        Destroy(liangyi, 9f);
     }
 
     private void ActiveTianleizhanEffect()

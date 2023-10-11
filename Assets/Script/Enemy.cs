@@ -79,6 +79,7 @@ public class Enemy : MonoBehaviour
     public void Stopstill(float stoptime)
     {
         movable = false;
+        spriteRenderer.color = new Color(1f, 1f, 0f, 1f);
         Invoke("ResumeMovement", stoptime);
     }
 
@@ -112,6 +113,7 @@ public class Enemy : MonoBehaviour
     public void ResumeMovement()
     {
         movable = true;
+        spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
     }
 
 

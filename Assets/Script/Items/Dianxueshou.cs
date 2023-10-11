@@ -25,7 +25,7 @@ public class Dianxueshou : MonoBehaviour
     {
         
         // 我们假设敌人的tag为"Enemy"，你还可以添加其他标签，如"Obstacle"等
-        if (collision.CompareTag("Enemy") || collision.CompareTag("Obstacle"))
+        if (collision.CompareTag("Enemy"))
         {   
             Enemy enemy = collision.GetComponent<Enemy>();
             if (enemy != null)
@@ -33,10 +33,7 @@ public class Dianxueshou : MonoBehaviour
                 float Stoptime = stoptime; // 这里可以添加玩家攻击力的影响
                 enemy.Stopstill(stoptime);
             }
-            if (collision.CompareTag("Obstacle"))
-            {
-                Destroy(gameObject); // 销毁子弹
-            }
+            
             //Destroy(gameObject); // 销毁子弹
         }
     }

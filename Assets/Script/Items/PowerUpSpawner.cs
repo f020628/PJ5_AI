@@ -28,7 +28,7 @@ public class PowerUpSpawner : MonoBehaviour
 
     private void SpawnPowerUpWithInterval()
     {
-        float spawnInterval = Random.Range(8, 12); // 生成时间在8-12之间随机
+        float spawnInterval = Random.Range(5, 10); // 生成时间在8-12之间随机
         SpawnPowerUp();
         Invoke("SpawnPowerUpWithInterval", spawnInterval); // 使用Invoke代替InvokeRepeating
     }
@@ -37,7 +37,7 @@ public class PowerUpSpawner : MonoBehaviour
     
     private void SpawnPowerUp()
     {
-        int numberOfPowerUps = Random.Range(2, 5); // 随机生成1-3个道具
+        int numberOfPowerUps = Random.Range(2, 4); // 随机生成1-3个道具
         for (int i = 0; i < numberOfPowerUps; i++)
         {
             Vector2 spawnPosition = new Vector2(

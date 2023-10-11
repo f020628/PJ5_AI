@@ -11,7 +11,7 @@ public class Rulaishenzhang : MonoBehaviour
     {
         Collider = GetComponent<Collider2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        Invoke("DisableCollider", 1f);
+        Invoke("DisableCollider", 0.8f);
     }
 
     // Update is called once per frame
