@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour
     public float sprintSpeedMultiplier = 2f; // 冲刺速度倍数
     public float rotationSpeed = 60f; // 每秒旋转的度数
     public float shootInterval = 0.05f; // 每0.5秒射击一次
-    private float WanjianShootInterval = 0.01f; 
+    private float WanjianShootInterval = 0.3f; 
     private float DianxueshouShootInterval = 0.1f;
 
     private float nextShootTime = 0f;
@@ -37,6 +37,9 @@ public class PlayerController : MonoBehaviour
     private float sprintNextAvailableTime;
     public SpriteRenderer Jingangzhou;
     public bool isInvincible = false; // 是否处于无敌状态
+
+    private float damageTakenWithinHalfSecond = 0f;
+    private float timeLastDamaged = -1f;
 
     // 移动和冲刺
     private Rigidbody2D rb;
@@ -222,9 +225,6 @@ void DrawGizmoForTransform(Transform trans, Color color)
     private void ShootWanbiao()
     {
         
-       /*  float elapsedTimeSinceLastShot = Time.time - nextShootTime + shootInterval; // 获取从上次射击到现在所经过的时间
-        float estimatedRotation = rotationSpeed * elapsedTimeSinceLastShot *2; // 估算的旋转角度，除以2使其更接近玩家当前的旋转状态
-        Vector2 estimatedDirection = Quaternion.Euler(0, 0, estimatedRotation) * transform.up; // 估算的发射方向 */
         Vector2 currentDirection = gunTransform.up;
 
         Wanbiao wanbiao1 = Instantiate(WeaponManager.Instance.wanbiaoPrefab, firePoint1.position, firePoint1.rotation).GetComponent<Wanbiao>();
@@ -344,16 +344,29 @@ private void CreateAndShootDianxueshou(Vector2 direction, Transform firePoint)
 
      public void TakeDamage(float damage)
     {
-        //Debug.Log("Player taking damage: " + damage+"Player health: "+health);
-        if (isInvincible)
+        if (Time.time - timeLastDamaged > 0.5f)
         {
-            return;
+            // 重置伤害累积器和计时器
+            damageTakenWithinHalfSecond = 0f;
+            timeLastDamaged = Time.time;
         }
-        health -= damage;
 
-        if (health <= 0)
+        float allowedDamage = Mathf.Max(0, 15f - damageTakenWithinHalfSecond);
+        
+        if (allowedDamage > 0)
         {
-            Die();
+            float actualDamage = Mathf.Min(damage, allowedDamage);
+            damageTakenWithinHalfSecond += actualDamage;
+            
+            if (isInvincible == false)
+            {
+                health -= actualDamage;
+            }
+
+            if (health <= 0)
+            {
+                Die();
+            }
         }
     }
 

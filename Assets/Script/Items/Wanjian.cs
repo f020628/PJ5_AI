@@ -4,17 +4,23 @@ using UnityEngine;
 
 public class Wanjian: MonoBehaviour
 {
-    public float speed = 40f;
+    public float speed = 15f;
     public float damage = 10f; // 这是基础伤害，可以受到玩家攻击力的影响
-    public float lifeDuration = 5f; // 子弹的生存时长
+    public float lifeDuration = 3f; // 子弹的生存时长
     private Vector2 moveDirection; // 子弹的移动方向
+
+    public Animator animator;
     
     private void Start()
     {
+        //循环播放wanjian动画
+        animator.Play("Wanjian");
+
         // 设置子弹的移动方向为其初始向上的方向
         //moveDirection = transform.up;
         // 10秒后销毁子弹
         Destroy(gameObject, lifeDuration);
+
     }
     private void Update()
     {

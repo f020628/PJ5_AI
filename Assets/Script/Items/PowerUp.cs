@@ -31,11 +31,14 @@ public class PowerUp : MonoBehaviour
         rb.velocity = moveDirection * moveSpeed;
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+       private void OnCollisionEnter2D(Collision2D collision)
     {
-        // 当道具碰到其他物体时，反弹
-        Vector2 reflectedVelocity = Vector2.Reflect(rb.velocity, collision.contacts[0].normal);
-        rb.velocity = reflectedVelocity;
+        // 当道具碰到其他物体时，选择一个新的随机方向
+        Debug.Log("Collided with " + collision.gameObject.name);
+        
+        // 选择一个新的随机方向
+        moveDirection = Random.insideUnitCircle.normalized;
+        rb.velocity = moveDirection * moveSpeed;
     }
 
     private void OnTriggerEnter2D(Collider2D collider)
@@ -45,47 +48,57 @@ public class PowerUp : MonoBehaviour
             PlayerController playerController = collider.GetComponent<PlayerController>();
             
             if (playerController != null) // 确保获取的PlayerController组件不为null
-            {
+            {   
                 if (type == PowerUpType.Wanbiao)
                 {
                     playerController.SwitchWeapon((int)WeaponType.Wanbiao, 8f); 
+                    Debug.Log("wanbiao");
                 }
                 else if (type == PowerUpType.Wanjian)
                 {
                     playerController.SwitchWeapon((int)WeaponType.Wanjian, 8f); 
+                    Debug.Log("wanjian");
                 }
                 else if (type == PowerUpType.Dianxueshou)
                 {
                     playerController.SwitchWeapon((int)WeaponType.Dianxueshou, 8f);
+                    Debug.Log("dianxueshou");
                 }
                 else if (type == PowerUpType.Jingangzhou)
                 {
                     playerController.ActiveJingangzhou(10f);
+                    Debug.Log("jingangzhou");
                 }
 
                 if (type == PowerUpType.Rulaishenzhang)
                 {
                     ActivateRulaishenzhangEffect();
+                    Debug.Log("rulaishenzhang");
                 }
                 else if (type == PowerUpType.Xixingdafa)
                 {
                     ActivateXixingdafaEffect();
+                    Debug.Log("xixingdafa");
                 }
                 else if (type == PowerUpType.Biyuefucheng)
                 {
                     ActivateBiyuefuchengEffect();
+                    Debug.Log("biyuefucheng");
                 }
                 else if (type == PowerUpType.Liangyizhenqi)
                 {
                     ActivateLiangyizhenqiEffect();
+                    Debug.Log("liangyizhenqi");
                 }
                 else if (type == PowerUpType.Xuechi)
                 {
                     ActivateXuechiEffect();
+                    Debug.Log("xuechi");
                 }
                 else if (type == PowerUpType.Tianleizhan)
                 {
                     ActiveTianleizhanEffect();
+                    Debug.Log("tianleizhan");
                 }
                 
 

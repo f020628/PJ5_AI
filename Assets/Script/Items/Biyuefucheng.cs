@@ -25,11 +25,19 @@ public class Biyuefucheng : MonoBehaviour
             {   
                 isRotatingLeft = false;
                 rotationSum = 0f;
+                //Ë®Æ½·­×ª
+                Vector3 scale = transform.localScale;
+                scale.x *= -1;
+                transform.localScale = scale;
+
             }
             else if(rotationSum >= 180f)
             {
                 isRotatingLeft = false;
                 rotationSum = 0f;
+                Vector3 scale = transform.localScale;
+                scale.x *= -1;
+                transform.localScale = scale;
                   
             }
         }
@@ -44,6 +52,9 @@ public class Biyuefucheng : MonoBehaviour
                 isRotatingLeft = true;
                 rotationSum = 0f;
                 firstTime = false;
+                Vector3 scale = transform.localScale;
+                scale.x *= -1;
+                transform.localScale = scale;
             }
         }
     }

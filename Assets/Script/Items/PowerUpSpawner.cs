@@ -37,7 +37,7 @@ public class PowerUpSpawner : MonoBehaviour
     
     private void SpawnPowerUp()
     {
-        int numberOfPowerUps = Random.Range(1, 4); // 随机生成1-3个道具
+        int numberOfPowerUps = Random.Range(2, 5); // 随机生成1-3个道具
         for (int i = 0; i < numberOfPowerUps; i++)
         {
             Vector2 spawnPosition = new Vector2(

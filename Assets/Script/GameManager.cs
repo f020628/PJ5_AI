@@ -36,9 +36,9 @@ public class GameManager : MonoBehaviour
     {
         float health = playerController.ShowHealth();
         // Update the text of the TextMeshPro components
-        coinText.text = "C: " + coins;
-        killText.text = "K: " + enemyKills;
-        healthText.text = "H: " + health;
-        timerText.text = "T: " + Time.time;
+        coinText.text = "" + coins;
+        killText.text = "" + enemyKills;
+        healthText.text = "" + Mathf.RoundToInt(health);
+        timerText.text = "" + Time.time;
     }
 }

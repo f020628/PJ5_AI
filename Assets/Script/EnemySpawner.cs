@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 
 [System.Serializable]
@@ -39,6 +41,10 @@ public class EnemySpawner : MonoBehaviour
 
     public GameObject enemyPrefab;
     public GameObject BigenemyPrefab;
+
+    public TextMeshProUGUI waveText;
+
+    
 
     public int minRowCount = 3;
     public int maxRowCount = 6;
@@ -90,6 +96,7 @@ public class EnemySpawner : MonoBehaviour
 
         // 清除场上所有敌人
         ClearAllEnemies();
+        showWaveText();
 
         yield return new WaitForSeconds(waveInterval - patternInterval);  // 减去最后一组和下一波之间的间隔
         currentWave++;
@@ -99,6 +106,19 @@ public class EnemySpawner : MonoBehaviour
         minColCount += increaseValue;
         maxColCount += increaseValue;
     }
+}
+
+private void showWaveText()
+{
+    waveText.gameObject.SetActive(true);
+    waveText.text = "Wave " + (currentWave + 2);
+    // 显示WaveText3s
+    Invoke("HideWaveText", 3f);
+}
+
+private void HideWaveText()
+{
+    waveText.gameObject.SetActive(false);
 }
 
 

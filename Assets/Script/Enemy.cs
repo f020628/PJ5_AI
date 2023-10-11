@@ -6,7 +6,7 @@ public class Enemy : MonoBehaviour
 {
     public float health = 10f;
     public float speed = 0.5f;
-    public float attackDamage = 20f;
+    public float attackDamage = 5f;
 
     private bool movable = false;
     public Animator animator; // 敌人的动画控制器
@@ -17,6 +17,9 @@ public class Enemy : MonoBehaviour
     private PlayerController playerController; // 假设玩家的脚本名为 PlayerController
     public GameObject CoinPrefab;
 
+    public SpriteRenderer spriteRenderer;
+    public SpriteRenderer spriteRenderer2;
+
     private void Start()
     {
         // 找到玩家对象
@@ -26,21 +29,23 @@ public class Enemy : MonoBehaviour
         playerController = player.GetComponent<PlayerController>();
         enemyCollider.enabled = false; 
         // 播放出生动画
-        animator.Play("FadeIn");
+        animator.Play("FadeIn"); 
     }
 
     private void Update()
     {
        if(movable)
-    {
-        Vector2 direction = (player.position - transform.position).normalized;
+   {
+       Vector2 direction = (player.position - transform.position).normalized;
 
-        // 计算敌人朝向玩家的角度
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        spriteTransform.rotation = Quaternion.Euler(0, 0, angle);
+       // 计算敌人Sprite朝向玩家的角度
+       float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
-        transform.Translate(direction * speed * Time.deltaTime);
-    }  
+       // 只修改spriteTransform的旋转，而不是整个敌人物体的旋转
+       spriteTransform.rotation = Quaternion.Euler(0, 0, angle);
+
+       transform.Translate(direction * speed * Time.deltaTime);
+   } 
 
         
     }
@@ -48,6 +53,9 @@ public class Enemy : MonoBehaviour
     public void OnSpawnAnimationComplete()
     {
         enemyCollider.enabled = true;
+        spriteRenderer.enabled = true;
+        spriteRenderer2.enabled = false;
+        
         movable = true;
         // 执行移动或其他逻辑
     }
@@ -71,7 +79,7 @@ public class Enemy : MonoBehaviour
     public void Stopstill(float stoptime)
     {
         movable = false;
-        Invoke("movable",stoptime);
+        Invoke("ResumeMovement", stoptime);
     }
 
     public void Die()
@@ -83,13 +91,14 @@ public class Enemy : MonoBehaviour
             Instantiate(CoinPrefab, transform.position, Quaternion.identity);
         }
         GameManager.Instance.enemyKills++;
+        spriteRenderer.enabled = false; 
         // 播放死亡动画
         animator.Play("FadeOut");
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player"))
+        if (collision.CompareTag("Player")&&movable)
         {
             playerController.TakeDamage(attackDamage); // 假设PlayerController有一个TakeDamage方法
             Die(); // 碰撞后敌人消失
@@ -100,6 +109,12 @@ public class Enemy : MonoBehaviour
     {
         transform.Translate(direction * strength * Time.deltaTime);
     }
+    public void ResumeMovement()
+    {
+        movable = true;
+    }
+
+
 
 }
 
