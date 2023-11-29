@@ -9,6 +9,7 @@ public class Enemy : MonoBehaviour
     public float attackDamage = 5f;
 
     private bool movable = false;
+    private bool die = false;
     public Animator animator; // 敌人的动画控制器
 
     public Collider2D enemyCollider; // 敌人的碰撞器
@@ -30,6 +31,9 @@ public class Enemy : MonoBehaviour
         enemyCollider.enabled = false; 
         // 播放出生动画
         animator.Play("FadeIn"); 
+        speed += Random.Range(-0.1f, 0.2f);
+        Stronger();
+
     }
 
     private void Update()
@@ -52,11 +56,13 @@ public class Enemy : MonoBehaviour
 
     public void OnSpawnAnimationComplete()
     {
-        enemyCollider.enabled = true;
-        spriteRenderer.enabled = true;
-        spriteRenderer2.enabled = false;
-        
-        movable = true;
+        if(die == false){
+            enemyCollider.enabled = true;
+            spriteRenderer.enabled = true;
+            spriteRenderer2.enabled = false;
+            
+            movable = true;
+        }
         // 执行移动或其他逻辑
     }
 
@@ -85,6 +91,7 @@ public class Enemy : MonoBehaviour
 
     public void Die()
     {   movable = false;    
+        die = true;
         enemyCollider.enabled = false;
         //有概率生成金币
         if(Random.Range(0,10)>5)
@@ -93,8 +100,20 @@ public class Enemy : MonoBehaviour
         }
         GameManager.Instance.enemyKills++;
         spriteRenderer.enabled = false; 
+        spriteRenderer2.enabled = true;
         // 播放死亡动画
+        //animator.speed = -1f;
+       // animator.Play("FadeIn", -1, 1f); // Start the fade-in animation from its end
+
+        //StartCoroutine(WaitAndDestroy(animator.GetCurrentAnimatorStateInfo(0).length));
         animator.Play("FadeOut");
+    }
+    
+    
+    IEnumerator WaitAndDestroy(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+        Destroy(gameObject);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -116,6 +135,16 @@ public class Enemy : MonoBehaviour
         spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
     }
 
+    private void Stronger()
+    {
+        int count = GameManager.Instance.enemyKills;
+        int add_health = count/10 ;
+        if (add_health>100)
+        {
+            add_health = 100;
+        }
+        health += add_health;
+    }
 
 
 }

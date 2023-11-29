@@ -19,6 +19,10 @@ public class PowerUp : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         spawnTime = Time.time;
         moveDirection = Random.insideUnitCircle.normalized;  // 生成一个随机的单位向量，作为移动方向
+        Debug.Log(moveDirection);
+        moveSpeed += Random.Range(-0.1f, 0.2f);
+        
+
     }
 
     private void Update()
@@ -28,18 +32,25 @@ public class PowerUp : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        
+    }
+    private void FixedUpdate()
+    {
+        // Move the PowerUp
         rb.velocity = moveDirection * moveSpeed;
     }
 
-       private void OnCollisionEnter2D(Collision2D collision)
-    {
-        // 当道具碰到其他物体时，选择一个新的随机方向
-        Debug.Log("Collided with " + collision.gameObject.name);
-        
-        // 选择一个新的随机方向
-        moveDirection = Random.insideUnitCircle.normalized;
-        rb.velocity = moveDirection * moveSpeed;
-    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+{
+    
+    moveDirection = -moveDirection;
+    // Add a small randomization to the direction
+    moveDirection += new Vector2(Random.Range(-1, 1f), Random.Range(-1f, 1f));
+    moveDirection.Normalize(); // Ensure the moveDirection stays as a unit vector
+
+}
+
 
     private void OnTriggerEnter2D(Collider2D collider)
     {

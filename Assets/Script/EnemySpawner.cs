@@ -33,7 +33,7 @@ public class EnemySpawner : MonoBehaviour
 {
     public List<Wave> waves;
     public List<Transform> potentialSpawnLocations;  // 所有Wave共用的生成位置列表
-    private int currentWave = 0;
+    public int currentWave = 0;
     
     private int maxWave = 10;
     
@@ -101,6 +101,10 @@ public class EnemySpawner : MonoBehaviour
         yield return new WaitForSeconds(waveInterval - patternInterval);  // 减去最后一组和下一波之间的间隔
         currentWave++;
         int increaseValue = Mathf.CeilToInt(currentWave / 5.0f);
+        if (increaseValue > 6)
+        {
+            increaseValue = 6;
+        }   
         minRowCount += increaseValue;
         maxRowCount += increaseValue;
         minColCount += increaseValue;
